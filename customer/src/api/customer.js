@@ -9,6 +9,7 @@ module.exports = (app, channel) => {
 	// SubscribeMessage(channel, service);
 
 	app.post('/signup', async (req, res, next) => {
+		console.log(req);
 		const { email, password, phone } = req.body;
 		const { data } = await service.SignUp({ email, password, phone });
 		res.json({ data, message: 'updated with CD configuration' });
