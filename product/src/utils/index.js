@@ -9,7 +9,6 @@ const {
 	MSG_QUEUE_URL,
 } = require('../config');
 
-//Utility functions
 (module.exports.GenerateSalt = async () => {
 	return await bcrypt.genSalt();
 }),
