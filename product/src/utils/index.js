@@ -53,15 +53,15 @@ module.exports.PublishCustomerEvent = async (payload) => {
 		payload,
 	});
 
-	//     axios.post(`${BASE_URL}/customer/app-events/`,{
-	//         payload
-	//     });
+	axios.post(`${BASE_URL}/customer/app-events/`, {
+		payload,
+	});
 };
 
 module.exports.PublishShoppingEvent = async (payload) => {
-	// axios.post('http://gateway:8000/shopping/app-events/',{
-	//         payload
-	// });
+	axios.post('http://gateway:8000/shopping/app-events/', {
+		payload,
+	});
 
 	axios.post(`http://shopping:8003/app-events/`, {
 		payload,

@@ -13,8 +13,6 @@ module.exports = async (app) => {
 	//api
 	// appEvents(app);
 
-	// const channel = await CreateChannel();
-	products(app);
-
-	// error handling
+	const channel = await CreateChannel();
+	products(app, channel);
 };
