@@ -8,7 +8,7 @@ module.exports = async (app) => {
 	app.use(cors());
 	app.use(express.static(__dirname + '/public'));
 
-	appEvents(app);
+	// appEvents(app);
 
 	const channel = await CreateChannel();
 
