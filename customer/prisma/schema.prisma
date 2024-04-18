@@ -7,6 +7,57 @@
 generator client {
   provider = "prisma-client-js"
 }
+model Customer {
+  id       String   @id @default(cuid())
+  email    String
+  password String
+  salt     String
+  phone    String
+  address  Address[]
+  cart     CartItem[] @relation("CartUser")
+  wishlist Product[] @relation("WishlistUser")
+  orders   Order[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+model Address {
+  id      String @id @default(cuid())
+  // Define your address fields here
+  
+  @@map("addresses")
+}
+
+model CartItem {
+  id       String  @id @default(cuid())
+  customer Customer @relation("CartUser", fields: [customerId], references: [id])
+  customerId String
+  product  Product @relation(fields: [productId], references: [id])
+  productId String
+  unit     Int
+  
+  @@map("cart_items")
+}
+
+model Product {
+  id          String @id @default(cuid())
+  // Define your product fields here
+  
+  @@map("products")
+}
+
+model Order {
+  id        String    @id @default(cuid())
+  customer  Customer  @relation(fields: [customerId], references: [id])
+  customerId String
+  amount    String
+  date      DateTime  @default(now())
+  
+  @@map("orders")
+}
 
 datasource db {
   provider = "postgresql"
