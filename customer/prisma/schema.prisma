@@ -7,56 +7,69 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 model Customer {
-  id       String   @id @default(cuid())
+  id       String      @id @default(cuid())
   email    String
   password String
   salt     String
   phone    String
   address  Address[]
-  cart     CartItem[] @relation("CartUser")
-  wishlist Product[] @relation("WishlistUser")
+  cart     Product[]
+  wishlist WhishItem[]
   orders   Order[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("users")
 }
 
 model Address {
-  id      String @id @default(cuid())
+  id String @id @default(cuid())
+
   // Define your address fields here
-  
+  Customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String
+  postalCode String
+  city       String
+  country    String
+
   @@map("addresses")
 }
 
-model CartItem {
-  id       String  @id @default(cuid())
-  customer Customer @relation("CartUser", fields: [customerId], references: [id])
+model Order {
+  id         String   @id @default(cuid())
+  customer   Customer @relation(fields: [customerId], references: [id])
   customerId String
-  product  Product @relation(fields: [productId], references: [id])
-  productId String
-  unit     Int
-  
-  @@map("cart_items")
+  amount     String
+  date       DateTime @default(now())
+
+  @@map("orders")
+}
+
+model WhishItem {
+  id          String   @id @default(cuid())
+  customerId  String
+  description String
+  price       Int
+  Customer    Customer @relation(fields: [customerId], references: [id])
+
+  @@map("whislist_item")
 }
 
 model Product {
-  id          String @id @default(cuid())
-  // Define your product fields here
-  
-  @@map("products")
-}
+  id String @id @default(cuid())
 
-model Order {
-  id        String    @id @default(cuid())
-  customer  Customer  @relation(fields: [customerId], references: [id])
-  customerId String
-  amount    String
-  date      DateTime  @default(now())
-  
-  @@map("orders")
+  // Define your product fields here
+  name String
+
+  banner     String
+  price      String
+  Customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId String?
+
+  @@map("products")
 }
 
 datasource db {
