@@ -6,6 +6,9 @@ const {
 	GenerateSignature,
 	ValidatePassword,
 } = require('../utils');
+const { Prisma, PrismaClient } = require('@prisma/client');
+
+const prisma = new PrismaClient();
 
 // All Business logic will be here
 class CustomerService {
@@ -16,7 +19,9 @@ class CustomerService {
 	async SignIn(userInputs) {
 		const { email, password } = userInputs;
 
-		const existingCustomer = await this.repository.FindCustomer({ email });
+		const existingCustomer = await prisma.user.findUnique({
+			where: { email },
+		});
 
 		if (existingCustomer) {
 			const validPassword = await ValidatePassword(
@@ -27,9 +32,9 @@ class CustomerService {
 			if (validPassword) {
 				const token = await GenerateSignature({
 					email: existingCustomer.email,
-					_id: existingCustomer._id,
+					id: existingCustomer.id, // Use id instead of _id
 				});
-				return FormateData({ id: existingCustomer._id, token });
+				return FormateData({ id: existingCustomer.id, token });
 			}
 		}
 
@@ -44,59 +49,89 @@ class CustomerService {
 
 		let userPassword = await GeneratePassword(password, salt);
 
-		const existingCustomer = await this.repository.CreateCustomer({
-			email,
-			password: userPassword,
-			phone,
-			salt,
+		const newCustomer = await prisma.user.create({
+			data: {
+				email,
+				password: userPassword,
+				phone,
+				salt,
+			},
 		});
 
 		const token = await GenerateSignature({
 			email: email,
-			_id: existingCustomer._id,
+			id: newCustomer.id, // Use id instead of _id
 		});
-		return FormateData({ id: existingCustomer._id, token });
+		return FormateData({ id: newCustomer.id, token });
 	}
 
-	async AddNewAddress(_id, userInputs) {
+	async AddNewAddress(id, userInputs) {
 		const { street, postalCode, city, country } = userInputs;
 
-		const addressResult = await this.repository.CreateAddress({
-			_id,
-			street,
-			postalCode,
-			city,
-			country,
+		const addressResult = await prisma.user.update({
+			where: { id },
+			data: {
+				addresses: {
+					create: {
+						street,
+						postalCode,
+						city,
+						country,
+					},
+				},
+			},
 		});
 
+		// Return the updated user object with the new address
 		return FormateData(addressResult);
 	}
 
 	async GetProfile(id) {
-		const existingCustomer = await this.repository.FindCustomerById({ id });
+		const existingCustomer = await prisma.user.findUnique({
+			where: { id },
+		});
 		return FormateData(existingCustomer);
 	}
 
 	async GetShopingDetails(id) {
-		const existingCustomer = await this.repository.FindCustomerById({ id });
+		const existingCustomer = await prisma.user.findUnique({
+			where: { id },
+			include: {
+				orders: true, // Include orders relation if needed
+			},
+		});
 
-		if (existingCustomer) {
-			// const orders = await this.shopingRepository.Orders(id);
-			return FormateData(existingCustomer);
-		}
-		return FormateData({ msg: 'Error' });
+		return FormateData(existingCustomer); // Might need error handling
 	}
 
 	async GetWishList(customerId) {
-		const wishListItems = await this.repository.Wishlist(customerId);
+		const wishListItems = await prisma.user.findUnique({
+			where: { id: customerId },
+			include: {
+				wishList: {
+					// Assuming wishlist is a one-to-many relation
+					select: { product: true }, // Select only the product information
+				},
+			},
+		}).wishList; // Access wishlist items directly
+
 		return FormateData(wishListItems);
 	}
 
 	async AddToWishlist(customerId, product) {
-		const wishlistResult = await this.repository.AddWishlistItem(
-			customerId,
-			product
-		);
+		// Assuming wishlist is a one-to-many relation with Product model
+		const wishlistResult = await prisma.user.update({
+			where: { id: customerId },
+			data: {
+				wishList: {
+					create: {
+						productId: product, // Assuming product is stored as a foreign key
+					},
+				},
+			},
+		});
+
+		// Return the updated user object with the new wishlist item
 		return FormateData(wishlistResult);
 	}
 
