@@ -12,6 +12,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@faker-js/faker": "^8.4.1",
+        "@ngneat/falso": "^7.2.0",
         "@prisma/client": "^5.12.1",
         "amqplib": "^0.8.0",
         "axios": "^0.21.1",
