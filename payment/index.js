@@ -19,3 +19,4 @@ const StartServer = async () => {
 			channel.close();
 		});
 };
+StartServer();
