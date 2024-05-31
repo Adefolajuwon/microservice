@@ -12,3 +12,21 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Wallet {
+  id           Int           @id @default(autoincrement())
+  balance      Float         @default(0.0)
+  userId       Int           @unique
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  amount    Float
+  type      String
+  walletId  Int
+  createdAt DateTime @default(now())
+  Wallet    Wallet   @relation(fields: [walletId], references: [id])
+}
