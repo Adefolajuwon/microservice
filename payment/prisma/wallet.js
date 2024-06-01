@@ -1,4 +1,4 @@
-export const wallet = [
+export const wallets = [
 	{
 		id: 1,
 		userId: 1,
