@@ -18,4 +18,16 @@ export class Wallet {
 		});
 		return wallet;
 	}
+	async getBalance() {
+		const userId = 1;
+		const wallet = await this.prisma.get(
+			findUnique({
+				where: { id: 1 },
+				select: {
+					id: true,
+					balance: true, // Onl retrieve id and email fields
+				},
+			})
+		);
+	}
 }
