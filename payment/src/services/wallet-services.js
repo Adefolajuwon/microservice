@@ -25,7 +25,7 @@ export class Wallet {
 				where: { id: 1 },
 				select: {
 					id: true,
-					balance: true, // Onlretrieve id and email fields
+					balance: true, // Only retrieve id and email fields
 				},
 			})
 		);
