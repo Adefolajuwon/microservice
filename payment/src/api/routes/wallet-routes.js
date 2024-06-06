@@ -1,6 +1,7 @@
-import Wallet from '../../api/routes/wallet-routes.js';
-import { Express } from 'express';
-const Router = express.Router();
+import Wallet from '../../services/wallet-services.js';
+import express from 'express';
+const walletRouter = express.Router();
 
-Router.get('/balance', Wallet.getBalance());
-export default Router;
+const wallet = new Wallet();
+walletRouter.get('/balance', wallet.getBalance());
+export default walletRouter;
