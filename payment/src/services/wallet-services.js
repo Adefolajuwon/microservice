@@ -11,23 +11,39 @@ export class Wallet {
 	constructor() {
 		this.prisma = new PrismaClient();
 	}
-	async createWallet() {
-		const userId = 1;
-		const wallet = await this.prisma.create({
-			userId: userId,
-		});
-		return wallet;
-	}
-	async getBalance() {
-		const userId = 1;
-		const wallet = await this.prisma.get(
-			findUnique({
-				where: { id: 1 },
+	createWallet = async () => {
+		try {
+			const userId = 14; // Replace with dynamic userId as needed
+			const wallet = await this.prisma.wallet.create({
+				data: {
+					userId: userId,
+				},
+			});
+			return wallet; // Ensure to return the created wallet
+		} catch (error) {
+			console.error('Error creating wallet:', error);
+			throw error;
+		} finally {
+			await this.prisma.$disconnect(); // Ensure to close the Prisma Client connection
+		}
+	};
+
+	getBalance = async () => {
+		try {
+			const userId = 14; // Replace with dynamic userId as needed
+			const wallet = await this.prisma.wallet.findUnique({
+				where: { userId: userId },
 				select: {
 					id: true,
-					balance: true, // Only retrieve id and email fields
+					balance: true,
 				},
-			})
-		);
-	}
+			});
+			return wallet; // Ensure to return the retrieved wallet
+		} catch (error) {
+			console.error('Error retrieving balance:', error);
+			throw error;
+		} finally {
+			await this.prisma.$disconnect(); // Ensure to close the Prisma Client connection
+		}
+	};
 }

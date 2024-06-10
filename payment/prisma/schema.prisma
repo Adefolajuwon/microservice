@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Wallet {
-  id           Int           @id @default(autoincrement())
+  id           Int           @id @unique @default(autoincrement())
   balance      Float         @default(0.0)
   userId       Int           @unique
   transactions Transaction[]

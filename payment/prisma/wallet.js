@@ -1,6 +1,5 @@
 export const wallets = [
 	{
-		id: 1,
 		userId: 1,
 		balance: 523.78,
 		createdAt: '2024-05-20T12:34:56.000Z',

@@ -10,7 +10,7 @@ const StartServer = async () => {
 
 	await expressApp(app);
 	app
-		.listen(8001, () => {
+		.listen(PORT, () => {
 			console.log(`---server listning on port ${PORT}---`);
 		})
 		.on('error', (err) => {
